@@ -1,0 +1,17 @@
+<div class="preferences">
+    <h2>Preferences</h2>
+    <form (ngSubmit)="savePreferences()">
+      <label for="ufoCount">Number of UFOs (1-5):</label>
+      <input type="number" id="ufoCount" name="ufoCount" [(ngModel)]="ufoCount" min="1" max="5" required>
+      <span *ngIf="ufoCount < 1 || ufoCount > 5" style="color: red;">Please select a number between 1 and 5.</span>
+  
+      <label for="time">Game Time (seconds):</label>
+      <select id="time" name="time" [(ngModel)]="time" required>
+        <option value="60">60</option>
+        <option value="120">120</option>
+        <option value="180">180</option>
+      </select>
+  
+      <button type="submit">Save Preferences</button>
+    </form>
+</div>  

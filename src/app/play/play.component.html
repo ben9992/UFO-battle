@@ -1,0 +1,27 @@
+<div class="game-container">
+       
+    <!-- UFOs -->
+    <div class="ufos">
+      <div class="ufo" *ngFor="let ufo of ufos">
+        <img src="assets/imgs/ufo.png" alt="UFO">
+      </div>
+    </div>
+    
+    <!-- Missile -->
+    <div class="missile">
+      <img src="assets/imgs/missile.png" alt="Missile">
+    </div>
+  
+    <div class="game-info">
+        <!-- Remaining time -->
+        <div class="remaining-time">
+          Remaining Time: {{ remainingTime }} seconds
+        </div>
+      
+        <!-- Score panel -->
+        <div class="score-panel">
+          Score: {{ finalScore }} points
+        </div>
+    </div>
+  
+</div>

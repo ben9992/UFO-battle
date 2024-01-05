@@ -1,0 +1,18 @@
+.ufo img {
+    width: 30px; 
+    height: 30px; 
+}
+
+.game-info {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Optional: semi-transparent background */
+  }
+  
+  .remaining-time,
+  .score-panel {
+    margin-bottom: 5px;
+  }
+  
