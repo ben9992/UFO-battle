@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
-import { UserServiceService } from './user-service.service';
+import { Injectable } from "@angular/core";
+import { UserService } from "./user-service.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class TokenmngService {
+  constructor() {}
 
-  constructor() { }
-
-  saveToken(token:string){
-    sessionStorage.setItem("token",token);
+  saveToken(token: string) {
+    sessionStorage.setItem("token", token);
   }
 }
