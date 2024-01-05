@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { PreferencesService } from '../shared/services/preferences.service';
-import { Router } from '@angular/router';
-import { UFO } from '../shared/models/ufo.model';
+import { Component, OnInit } from "@angular/core";
+import { PreferencesService } from "../shared/services/preferences.service";
+import { Router } from "@angular/router";
+import { Ufo } from "../shared/models/ufo.model";
 
 @Component({
-  selector: 'app-preferences',
-  templateUrl: './preferences.component.html',
-  styleUrls: ['./preferences.component.css']
+  selector: "app-preferences",
+  templateUrl: "./preferences.component.html",
+  styleUrls: ["./preferences.component.css"],
 })
 export class PreferencesComponent implements OnInit {
   ufoCount: number = 1;
@@ -15,7 +15,7 @@ export class PreferencesComponent implements OnInit {
   constructor(
     private preferencesService: PreferencesService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     // Retrieve preferences from service
@@ -43,12 +43,12 @@ export class PreferencesComponent implements OnInit {
 
   savePreferences(): void {
     if (this.ufoCount < 1 || this.ufoCount > 5) {
-      alert('Please select a number of UFOs between 1 and 5');
+      alert("Please select a number of UFOs between 1 and 5");
     } else {
       this.preferencesService.setUfoCount(this.ufoCount);
       this.preferencesService.setTime(this.time);
       // Navigate to the play screen if UFO count is valid
-      this.router.navigate(['/play']);
+      this.router.navigate(["/play"]);
     }
   }
 }

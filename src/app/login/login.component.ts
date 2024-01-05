@@ -22,7 +22,7 @@ export class LoginComponent {
 
     this.userService.login(this.user.username, this.user.password).subscribe({
       next: (response) => {
-        localStorage.setItem("token", response.body);
+        localStorage.setItem("token", response.body.split(" ")[1]);
 
         window.location.reload();
       },

@@ -18,6 +18,6 @@ export class AppComponent {
 
   logout() {
     this.userService.logOut();
-    window.location.reload();
+    window.location.href = "/home";
   }
 }

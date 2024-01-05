@@ -1,100 +1,162 @@
-import { Component, OnInit } from '@angular/core';
-import { UFO } from '../shared/models/ufo.model';
-import { Missile } from '../shared/models/missile.model';
-import { PreferencesService } from '../shared/services/preferences.service';
-import { interval, Subscription } from 'rxjs';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnInit,
+  Renderer2,
+} from "@angular/core";
+import { Ufo } from "../shared/models/ufo.model";
+import { Missile } from "../shared/models/missile.model";
+import { DOCUMENT } from "@angular/common";
+import { PreferencesService } from "../shared/services/preferences.service";
 
 @Component({
-  selector: 'app-play',
-  templateUrl: './play.component.html',
-  styleUrl: './play.component.css'
+  selector: "app-play",
+  templateUrl: "./play.component.html",
+  styleUrls: ["./play.component.css"],
 })
-
-
 export class PlayComponent implements OnInit {
-  ufos: UFO[] = []; // Array to store UFO instances
-  missile: Missile = new Missile(); // Instance of Missile
+  seconds = 0;
+  score = 0;
+  nUfo!: number;
+  setOfUfos: Ufo[] = [];
+  hit: string = "";
+  missile!: Missile;
+  timeCount: any;
+  private localStorage;
 
-  remainingTime: number = 0; // Remaining time in seconds
-  finalScore: number = 0; // Final score after game ends
-
-  constructor(private preferencesService: PreferencesService) { }
-
-  ngOnInit(): void {
-  // Get the user preferences for UFO count and game time
-    let ufoCount = this.preferencesService.getUfoCount();
-    let gameTime = this.preferencesService.getTime();
-  
-  // Set default values if preferences are not set
-    if (!ufoCount || ufoCount < 1 || ufoCount > 5) {
-       ufoCount = 1; // Default UFO count
-     }
-    if (!gameTime || ![60, 120, 180].includes(gameTime)) {
-       gameTime = 60; // Default game time
-    }
-  
-    // Create UFO instances based on user preferences
-    for (let i = 0; i < ufoCount; i++) {
-        const direction = i % 2 === 0 ? 'left' : 'right'; // Alternate direction
-        const speed = 5 + i; // Varying speeds for UFOs (example)
-
-    //   const ufo = new UFO(i * 100, direction, speed); // Adjust initial positions
-    //   this.ufos.push(ufo);
-    }
-  
-  //   this.remainingTime = gameTime;
-  //   this.startGame();
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private preferencesService: PreferencesService,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    this.localStorage = document.defaultView?.localStorage;
   }
-  
+  ngOnInit(): void {
+    if (!this.localStorage) return;
+    this.seconds = this.preferencesService.getTime();
+    this.nUfo = this.preferencesService.getUfoCount();
 
-  // startGame(): void {
-  //   // Start game logic
-  //   const gameInterval = setInterval(() => {
-  //     // Game loop
-  //     this.updatePositions();
-  //     this.checkCollisions();
-  //     this.updateUI();
+    this.timeCount = setInterval(() => {
+      this.countTime();
+    }, 1000);
 
-  //     this.remainingTime--;
+    for (let i = 0; i < this.nUfo; i++) {
+      this.createTag("ufo" + i, i);
+    }
 
-  //     if (this.remainingTime <= 0) {
-  //       clearInterval(gameInterval);
-  //       this.endGame();
-  //     }
-  //   }, 1000); // Update game state every second
-  // }
+    for (let i = 0; i < this.nUfo; i++) {
+      this.setOfUfos.push(new Ufo("ufo" + i, i));
+    }
 
-  // updatePositions(): void {
-  //   // Update positions of UFOs and Missile based on their properties
-  //   this.ufos.forEach(ufo => ufo.move());
-  //   this.missile.move();
-  // }
+    for (let i = 0; i < this.nUfo; i++) {
+      this.setOfUfos[i].pid = setInterval(() => {
+        this.setOfUfos[i].move();
+        this.checkForAHit(this.setOfUfos[i], this.missile);
+      }, 25);
+    }
+    this.createMTag();
+    this.missile = new Missile("missile", 0);
+  }
 
-  // checkCollisions(): void {
-  //   // Check for collisions between UFOs and Missile
-  //   // Implement collision detection logic
-  // }
+  countTime() {
+    this.seconds--;
+    if (this.seconds === 0) {
+    }
+  }
 
-  // updateUI(): void {
-  //   // Update the UI based on the positions of UFOs and Missile
-  //   // Display remaining time and scores
-  // }
+  createTag(name: string, number: number) {
+    let newImg = this.renderer.createElement("img");
+    this.renderer.setAttribute(newImg, "id", name);
+    this.renderer.setAttribute(newImg, "class", "setOfUfos");
+    this.renderer.setAttribute(newImg, "src", "assets/imgs/ufo.png");
+    this.renderer.setStyle(newImg, "width", "70px");
 
-  // launchMissile(): void {
-  //   // Handle user input to launch the Missile
-  //   if (!this.missile.launched) {
-  //     this.missile.launch();
-  //   }
-  // }
+    //Posición inicial de cada ufo
+    let rLimit = window.innerWidth - 70, //ancho de la nave
+      uLimit = window.innerHeight - 70, //altura de la nave
+      newleft = Math.random() * rLimit,
+      newbottom = uLimit - (350 + number * 70); //Limite para que no se suban unos encima de otros
 
-  // endGame(): void {
-  //   // End the game and calculate the final score
-  //   // Apply the scoring rules based on the provided instructions
-  //   this.calculateFinalScore();
-  //   // Display final score and any end-of-game messages
-  // }
+    this.renderer.setStyle(newImg, "left", newleft + "px");
+    this.renderer.setStyle(newImg, "bottom", newbottom + "px");
 
-  // calculateFinalScore(): void {
-  //   // Implement final score calculation logic based on game rules
-  // }
+    this.renderer.appendChild(this.el.nativeElement, newImg);
+  }
+
+  createMTag() {
+    let newImg = this.renderer.createElement("img");
+    this.renderer.setAttribute(newImg, "id", "missile");
+    this.renderer.setAttribute(newImg, "class", "missile");
+    this.renderer.setAttribute(newImg, "src", "assets/imgs/misil.jpg");
+    this.renderer.setStyle(newImg, "width", "40px");
+    this.renderer.setStyle(newImg, "height", "70px");
+
+    this.renderer.setStyle(newImg, "left", 50 + "px");
+    this.renderer.setStyle(newImg, "bottom", 10 + "px");
+
+    this.renderer.appendChild(this.el.nativeElement, newImg);
+  }
+
+  ngOnDestroy(): void {
+    for (let i = 0; i < this.nUfo; i++) {
+      clearInterval(this.setOfUfos[i].pid);
+    }
+    clearInterval(this.timeCount);
+  }
+
+  @HostListener("document:keydown", ["$event"])
+  keypressed(theEvent: KeyboardEvent) {
+    switch (theEvent.key) {
+      case "ArrowRight":
+        this.missile.moveHorizontal(this.missile.hstep);
+        break;
+      case "ArrowLeft":
+        this.missile.moveHorizontal(-1 * this.missile.hstep);
+        break;
+      case " ":
+        if (!this.missile.launchedMissile) {
+          this.missile.launchedMissile = true;
+          this.missile.pid = window.setInterval(() => {
+            this.missile.trigger();
+          }, 15);
+        }
+        break;
+    }
+  }
+
+  checkForAHit(ufo: Ufo, missile: Missile) {
+    let theufo = document.getElementById(ufo.id) as HTMLElement;
+    let themissile = document.getElementById(missile.id) as HTMLElement;
+    let hpos_ufo = parseInt(theufo.style.left),
+      vpos_ufo = parseInt(theufo.style.bottom),
+      width_ufo = parseInt(theufo.style.width),
+      vpos_m = parseInt(themissile.style.bottom),
+      hpos_m = parseInt(themissile.style.left),
+      width_m = parseInt(themissile.style.width),
+      height_m = parseInt(themissile.style.height);
+
+    if (
+      vpos_m + height_m >= vpos_ufo - 10 &&
+      hpos_m >= hpos_ufo - 10 &&
+      hpos_m <= hpos_ufo + width_ufo + 10
+    ) {
+      this.hit = ufo.id;
+    }
+
+    if (this.hit != "") {
+      clearInterval(this.missile.pid);
+      this.missile.newMissile();
+      this.missile.launchedMissile = false;
+      if (!this.localStorage) return;
+      this.score += 100;
+      theufo.setAttribute("src", "assets/imgs/explosion.gif");
+      setTimeout(() => {
+        theufo.setAttribute("src", "assets/imgs/ufo.png");
+      }, 500);
+      this.hit = "";
+    }
+  }
 }
