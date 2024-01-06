@@ -18,20 +18,19 @@ export class Missile {
   constructor(id: string, pid: number) {
     this.id = id;
     this.element = document.getElementById(id) as HTMLElement;
-    this.element.style.left = "200px";
+    this.element.style.left = "10px";
     this.hpos = parseInt(this.element.style.left);
     this.vpos = parseInt(this.element.style.bottom);
   }
 
   moveHorizontal(step: number) {
-    if (this.hpos + step < this.conf.rLimit - 40 && this.hpos + step >= 200) {
+    if (this.hpos + step < this.conf.rLimit - 40 && this.hpos + step >= 10) {
       this.hpos = this.hpos + step;
       this.element.style.left = this.hpos + "px";
     }
   }
 
   newMissile() {
-    this.hpos = 200;
     this.vpos = 10;
     this.element.style.bottom = this.vpos + "px";
     this.element.style.left = this.hpos + "px";
