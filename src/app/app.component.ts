@@ -12,7 +12,9 @@ export class AppComponent {
 
   constructor(public userService: UserService, public router: Router) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
     this.isUserLoggedIn = this.userService.isUserLoggedIn();
   }
 

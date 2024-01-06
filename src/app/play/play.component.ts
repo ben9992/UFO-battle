@@ -8,8 +8,10 @@ import {
 } from "@angular/core";
 import { Ufo } from "../shared/models/ufo.model";
 import { Missile } from "../shared/models/missile.model";
-import { DOCUMENT } from "@angular/common";
 import { PreferencesService } from "../shared/services/preferences.service";
+import { UserService } from "../shared/services/user-service.service";
+import { ScoresService } from "../shared/services/scores.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-play",
@@ -24,18 +26,17 @@ export class PlayComponent implements OnInit {
   hit: string = "";
   missile!: Missile;
   timeCount: any;
-  private localStorage;
+  isUserLoggedIn = false;
 
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
     private preferencesService: PreferencesService,
-    @Inject(DOCUMENT) private document: Document
-  ) {
-    this.localStorage = document.defaultView?.localStorage;
-  }
+    private scoresService: ScoresService,
+    private router: Router,
+    private userService: UserService
+  ) {}
   ngOnInit(): void {
-    if (!this.localStorage) return;
     this.seconds = this.preferencesService.getTime();
     this.nUfo = this.preferencesService.getUfoCount();
 
@@ -61,9 +62,29 @@ export class PlayComponent implements OnInit {
     this.missile = new Missile("missile", 0);
   }
 
+  recordScore() {
+    this.scoresService
+      .postRecord({
+        punctuation: this.score,
+        ufos: this.nUfo,
+        disposedTime: this.preferencesService.getTime(),
+      })
+      .subscribe({
+        next: () => {
+          alert("Score saved");
+          this.router.navigate(["/records"]);
+        },
+        error: (err) => {
+          alert("There was an error");
+        },
+      });
+  }
+
   countTime() {
     this.seconds--;
     if (this.seconds === 0) {
+      this.isUserLoggedIn = this.userService.isUserLoggedIn();
+      this.stopGame();
     }
   }
 
@@ -101,6 +122,10 @@ export class PlayComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.stopGame();
+  }
+
+  stopGame() {
     for (let i = 0; i < this.nUfo; i++) {
       clearInterval(this.setOfUfos[i].pid);
     }
@@ -150,7 +175,6 @@ export class PlayComponent implements OnInit {
       clearInterval(this.missile.pid);
       this.missile.newMissile();
       this.missile.launchedMissile = false;
-      if (!this.localStorage) return;
       this.score += 100;
       theufo.setAttribute("src", "assets/imgs/explosion.gif");
       setTimeout(() => {

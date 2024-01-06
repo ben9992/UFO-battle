@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { Router } from "@angular/router"; // Import Router for redirection
 import { UserService } from "../shared/services/user-service.service";
 import { User } from "../shared/models/user";
+import { TokenmngService } from "../shared/services/tokenmng.service";
 
 @Component({
   selector: "app-login",
@@ -12,7 +13,10 @@ export class LoginComponent {
   user: User = new User();
   mytoken: string = "";
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(
+    private userService: UserService,
+    private tokenMng: TokenmngService
+  ) {}
 
   dologin() {
     if (!this.user.username.trim() || !this.user.password.trim()) {
@@ -21,12 +25,11 @@ export class LoginComponent {
     }
 
     this.userService.login(this.user.username, this.user.password).subscribe({
-      next: (response) => {
-        localStorage.setItem("token", response.body.split(" ")[1]);
-
+      next: (response: any) => {
+        this.tokenMng.saveToken(response.body.split(" ")[1]);
         window.location.reload();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error(err);
         if (err.status === 401) {
           alert("Invalid username or password.");

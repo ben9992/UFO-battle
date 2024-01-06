@@ -1,21 +1,15 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { config } from "../models/config";
-import { DOCUMENT } from "@angular/common";
+import { TokenmngService } from "./tokenmng.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
   private usersUrl = `${config.base_url}/users`;
-  private localStorage;
-  constructor(
-    private http: HttpClient,
-    @Inject(DOCUMENT) private document: Document
-  ) {
-    this.localStorage = document.defaultView?.localStorage;
-  }
+  constructor(private http: HttpClient, private tokenMng: TokenmngService) {}
 
   login(user: string, pass: string): Observable<any> {
     return this.http.get(
@@ -25,12 +19,12 @@ export class UserService {
   }
 
   isUserLoggedIn() {
-    if (this.localStorage) return !!this.localStorage.getItem("token");
-    else return false;
+    const token = this.tokenMng.getToken();
+    return token !== null;
   }
 
   logOut() {
-    if (this.localStorage) this.localStorage.removeItem("token");
+    this.tokenMng.removeToken();
   }
 
   checkUsernameExists(username: string) {

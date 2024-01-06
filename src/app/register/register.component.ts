@@ -15,55 +15,32 @@ export class RegisterComponent {
   isLoggedIn: boolean = false;
   usernameExists: boolean = false;
 
-  constructor(private userService: UserService, private router: Router) {
-    // Check user's login status here and set isLoggedIn accordingly
-  }
+  constructor(private userService: UserService, private router: Router) {}
 
   checkUsername() {
     if (this.user.username) {
-      this.userService.checkUsernameExists(this.user.username).subscribe(
-        (exists: boolean) => {
+      this.userService.checkUsernameExists(this.user.username).subscribe({
+        next: (exists: boolean) => {
           alert("User is already registered.");
           this.usernameExists = exists;
         },
-        (error) => {
+        error: (error) => {
           console.error("Error checking username uniqueness:", error);
-          // Handle error if the API call fails
-        }
-      );
+        },
+      });
     }
   }
 
   onSubmit() {
-    this.userService.registerUser(this.user).subscribe(
-      () => {
+    this.userService.registerUser(this.user).subscribe({
+      next: () => {
         alert("User registered successfully.");
         this.router.navigate(["/login"]);
       },
-      (err) => {
-        if (err.status === 409) alert("User is already registered.");
+      error: (error) => {
+        if (error.status === 409) alert("User is already registered.");
         else alert("There was an error registering the user.");
-      }
-    );
+      },
+    });
   }
 }
-
-//  onSubmit() {
-//   if (!this.usernameExists) {
-//     this.userService.registerUser(this.user)
-//       .subscribe(
-//         (response: any) => {
-//           console.log('Registration successful:', response);
-//           // Display a success message to the user
-//         },
-//         (error) => {
-//           console.error('Error during registration:', error);
-//           // Handle registration error
-//           // Display an error message to the user
-//         }
-//       );
-//   } else {
-//     // Inform the user that the username is already taken
-//     console.log('Username already exists. Please choose another.');
-//   }
-// }
