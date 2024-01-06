@@ -1,7 +1,7 @@
 export class Missile {
   conf = {
     rLimit: window.innerWidth,
-    uLimit: window.innerHeight - 170,
+    uLimit: window.innerHeight - 140,
   };
 
   hpos: number;
@@ -18,19 +18,23 @@ export class Missile {
   constructor(id: string, pid: number) {
     this.id = id;
     this.element = document.getElementById(id) as HTMLElement;
+    this.element.style.left = "200px";
     this.hpos = parseInt(this.element.style.left);
-    this.element.style.bottom = "200px";
     this.vpos = parseInt(this.element.style.bottom);
   }
 
   moveHorizontal(step: number) {
-    this.hpos = this.hpos + step;
-    this.element.style.left = this.hpos + "px";
+    if (this.hpos + step < this.conf.rLimit - 40 && this.hpos + step >= 200) {
+      this.hpos = this.hpos + step;
+      this.element.style.left = this.hpos + "px";
+    }
   }
 
   newMissile() {
-    this.vpos = 200;
+    this.hpos = 200;
+    this.vpos = 10;
     this.element.style.bottom = this.vpos + "px";
+    this.element.style.left = this.hpos + "px";
     this.launchedMissile = false;
   }
 

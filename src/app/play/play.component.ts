@@ -103,7 +103,7 @@ export class PlayComponent implements OnInit {
     let rLimit = window.innerWidth - 70, //ancho de la nave
       uLimit = window.innerHeight - 70, //altura de la nave
       newleft = Math.random() * rLimit,
-      newbottom = uLimit - (150 + number * 70); //Limite para que no se suban unos encima de otros
+      newbottom = uLimit - (60 + number * 70); //Limite para que no se suban unos encima de otros
 
     this.renderer.setStyle(newImg, "left", newleft + "px");
     this.renderer.setStyle(newImg, "bottom", newbottom + "px");
