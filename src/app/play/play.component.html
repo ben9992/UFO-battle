@@ -1,10 +1,9 @@
 <div class="game-info">
+  <button *ngIf="isUserLoggedIn" (click)="recordScore()">Record Score</button>
   <div class="info-section" id="info_points">
     <span class="info-label">SCORE:</span>
     <p class="info-value" id="points">{{ score }}</p>
   </div>
-
-  <button *ngIf="isUserLoggedIn" (click)="recordScore()">Record Score</button>
 
   <div class="info-section" id="info_time">
     <span class="info-label">TIME LEFT:</span>

@@ -1,16 +1,3 @@
-#info_points {
-  position: absolute;
-  top: 190px;
-  right: 80px;
-  height: 70px;
-}
-#info_time {
-  position: absolute;
-  top: 190px;
-  left: 80px;
-  height: 70px;
-}
-
 #missile {
   position: absolute;
   bottom: 10px;
@@ -34,10 +21,11 @@
 
 .game-info {
   display: flex;
-  justify-content: flex-end;
   color: white;
   border-radius: 5px;
   font-family: "Arial", sans-serif;
+  flex-direction: column-reverse;
+  align-items: center;
 }
 
 .info-section {
@@ -71,11 +59,13 @@ button {
 }
 
 #info_time {
-  width: fit-content;
+  width: 15rem;
   z-index: 1;
   background: black;
+  margin: 1rem;
 }
 
 #info_points {
+  width: 15rem;
   background: black;
 }

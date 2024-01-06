@@ -15,7 +15,9 @@ export class AppComponent {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.isUserLoggedIn = this.userService.isUserLoggedIn();
+    setTimeout(() => {
+      this.isUserLoggedIn = this.userService.isUserLoggedIn();
+    }, 100);
   }
 
   logout() {

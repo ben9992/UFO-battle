@@ -2,7 +2,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Inject,
   OnInit,
   Renderer2,
 } from "@angular/core";

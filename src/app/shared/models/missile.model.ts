@@ -1,7 +1,7 @@
 export class Missile {
   conf = {
     rLimit: window.innerWidth,
-    uLimit: window.innerHeight - 400, //Evita que se suba sobre el menú y el título
+    uLimit: window.innerHeight - 400,
   };
 
   hpos: number;
