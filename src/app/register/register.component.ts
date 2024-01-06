@@ -24,9 +24,6 @@ export class RegisterComponent {
           alert("User is already registered.");
           this.usernameExists = exists;
         },
-        error: (error) => {
-          console.error("Error checking username uniqueness:", error);
-        },
       });
     }
   }

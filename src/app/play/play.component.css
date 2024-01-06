@@ -26,6 +26,9 @@
   font-family: "Arial", sans-serif;
   flex-direction: column-reverse;
   align-items: center;
+  position: absolute;
+  left: 3rem;
+  bottom: 3rem;
 }
 
 .info-section {

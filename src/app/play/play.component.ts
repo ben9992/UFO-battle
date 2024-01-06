@@ -24,6 +24,7 @@ export class PlayComponent implements OnInit {
   setOfUfos: Ufo[] = [];
   hit: string = "";
   missile!: Missile;
+  scoreDeducted: boolean = false;
   timeCount: any;
   isUserLoggedIn = false;
 
@@ -54,8 +55,12 @@ export class PlayComponent implements OnInit {
     for (let i = 0; i < this.nUfo; i++) {
       this.setOfUfos[i].pid = setInterval(() => {
         this.setOfUfos[i].move();
-        this.checkForAHit(this.setOfUfos[i], this.missile);
       }, 25);
+    }
+    for (let i = 0; i < this.nUfo; i++) {
+      this.setOfUfos[i].pid = setInterval(() => {
+        this.checkForAHit(this.setOfUfos[i], this.missile);
+      }, 10);
     }
     this.createMTag();
     this.missile = new Missile("missile", 0);
@@ -98,7 +103,7 @@ export class PlayComponent implements OnInit {
     let rLimit = window.innerWidth - 70, //ancho de la nave
       uLimit = window.innerHeight - 70, //altura de la nave
       newleft = Math.random() * rLimit,
-      newbottom = uLimit - (350 + number * 70); //Limite para que no se suban unos encima de otros
+      newbottom = uLimit - (150 + number * 70); //Limite para que no se suban unos encima de otros
 
     this.renderer.setStyle(newImg, "left", newleft + "px");
     this.renderer.setStyle(newImg, "bottom", newbottom + "px");
@@ -180,6 +185,17 @@ export class PlayComponent implements OnInit {
         theufo.setAttribute("src", "assets/imgs/ufo.png");
       }, 500);
       this.hit = "";
+    } else if (this.missile.vpos > this.missile.conf.uLimit) {
+      // Check if a new missile is created and no hit is registered
+      if (!this.missile.alreadyMissed) {
+        this.score -= 25;
+        this.missile.alreadyMissed = true; // Mark the missile as having missed the target
+      }
+    } else {
+      // Reset the flag when a new missile is launched
+      this.missile.alreadyMissed = false;
     }
+
+    if (this.missile.vpos === 0) this.scoreDeducted = false;
   }
 }
