@@ -26,7 +26,8 @@ export class LoginComponent {
 
     this.userService.login(this.user.username, this.user.password).subscribe({
       next: (response: any) => {
-        this.tokenMng.saveToken(response.body.split(" ")[1]);
+        const token = response.headers.get("Authorization");
+        if (token) this.tokenMng.saveToken(token);
         window.location.reload();
       },
       error: (err: any) => {

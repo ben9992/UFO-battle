@@ -8,15 +8,36 @@ import { TokenmngService } from "./tokenmng.service";
   providedIn: "root",
 })
 export class UserService {
+  // username: string = "";
+  // password: string = "";
   private usersUrl = `${config.base_url}/users`;
   constructor(private http: HttpClient, private tokenMng: TokenmngService) {}
 
   login(user: string, pass: string): Observable<any> {
+    // this.username = user;
+    // this.password = pass;
     return this.http.get(
       `${this.usersUrl}/login?username=${user}&password=${pass}`,
       { observe: "response" }
     );
   }
+
+  // refreshLogin() {
+  //   if (this.username === "" || this.password === "") return;
+  //   this.http
+  //     .get(
+  //       `${this.usersUrl}/login?username=${this.username}&password=${this.password}`,
+  //       {
+  //         observe: "response",
+  //       }
+  //     )
+  //     .subscribe({
+  //       next: (response) => {
+  //         const token = response.headers.get("Authorization");
+  //         if (token) this.tokenMng.saveToken(token);
+  //       },
+  //     });
+  // }
 
   isUserLoggedIn() {
     const token = this.tokenMng.getToken();
@@ -25,6 +46,8 @@ export class UserService {
 
   logOut() {
     this.tokenMng.removeToken();
+    // this.username = "";
+    // this.password = "";
   }
 
   checkUsernameExists(username: string) {

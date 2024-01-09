@@ -2,11 +2,12 @@ export class Ufo {
   hpos: number;
   id: string;
   pid: any;
+  hitId: any;
   element: HTMLElement;
   width: number = 70;
   hstep: number = 5;
 
-  constructor(id: string, pid: number) {
+  constructor(id: string) {
     this.id = id;
     this.element = document.getElementById(id) as HTMLElement;
     this.hpos = parseInt(this.element.style.left);

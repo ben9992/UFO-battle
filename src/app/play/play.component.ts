@@ -49,7 +49,7 @@ export class PlayComponent implements OnInit {
     }
 
     for (let i = 0; i < this.nUfo; i++) {
-      this.setOfUfos.push(new Ufo("ufo" + i, i));
+      this.setOfUfos.push(new Ufo("ufo" + i));
     }
 
     for (let i = 0; i < this.nUfo; i++) {
@@ -58,7 +58,7 @@ export class PlayComponent implements OnInit {
       }, 25);
     }
     for (let i = 0; i < this.nUfo; i++) {
-      this.setOfUfos[i].pid = setInterval(() => {
+      this.setOfUfos[i].hitId = setInterval(() => {
         this.checkForAHit(this.setOfUfos[i], this.missile);
       }, 10);
     }
@@ -132,6 +132,7 @@ export class PlayComponent implements OnInit {
   stopGame() {
     for (let i = 0; i < this.nUfo; i++) {
       clearInterval(this.setOfUfos[i].pid);
+      clearInterval(this.setOfUfos[i].hitId);
     }
     clearInterval(this.timeCount);
   }
